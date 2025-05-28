@@ -9,6 +9,7 @@ class GameDataResource(Resource):
             result.append
             ({
                 'name': row.name,
-                'prices': row.prices
+                'prices': row.prices,
+                "url" : row.url 
             })
         return result

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from flask_restful import Api
 from models import db, gameData
-from scrapper import get_price
+from scrapper import get_price, get_id, get_reg_price
 from resources import GameDataResource
 
 app = Flask(__name__)
@@ -22,14 +22,15 @@ def home():
 def button_pressed():
     user_input = request.form.get("input")
     price_text = get_price(user_input)
-
     price_text = float(price_text.replace(",", ".").replace("€", "").strip())
+    userID = get_id(user_input)
+    user_reg_price = get_reg_price(user_input, aud)
 
-    game = gameData(name=user_input, prices=price_text)
+    game = gameData(name=user_input, prices=price_text, gameID=userID)
     db.session.add(game)
     db.session.commit()
 
-    return render_template("result.html", game=user_input, price=price_text)
+    return render_template("result.html", game=user_input, price=price_text, id=userID)
 
 api.add_resource(GameDataResource, "/get_data")
 
