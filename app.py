@@ -23,14 +23,17 @@ def button_pressed():
     user_input = request.form.get("input")
     price_text = get_price(user_input)
     price_text = float(price_text.replace(",", ".").replace("€", "").strip())
-    userID = get_id(user_input)
-    user_reg_price = get_reg_price(user_input, aud)
+    gameID = get_id(user_input)
 
-    game = gameData(name=user_input, prices=price_text, gameID=userID)
+    country = request.form.get("country")
+    sel_reg = country
+    user_reg_price = get_reg_price(gameID, sel_reg)
+
+    game = gameData(name=user_input, prices=price_text, gameID=gameID)
     db.session.add(game)
     db.session.commit()
 
-    return render_template("result.html", game=user_input, price=price_text, id=userID)
+    return render_template("result.html", game=user_input, price=price_text, id=gameID, new_price = user_reg_price)
 
 api.add_resource(GameDataResource, "/get_data")
 

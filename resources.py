@@ -6,10 +6,9 @@ class GameDataResource(Resource):
         data = gameData.query.all()
         result = []
         for row in data:
-            result.append
-            ({
+            result.append({
                 'name': row.name,
                 'prices': row.prices,
-                "url" : row.url 
+                #"url" : row.url 
             })
         return result
