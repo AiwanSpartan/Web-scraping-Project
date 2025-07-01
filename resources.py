@@ -8,7 +8,9 @@ class GameDataResource(Resource):
         for row in data:
             result.append({
                 'name': row.name,
-                'prices': row.prices,
-                #"url" : row.url 
+                "game_id" : row.gameID,
+                'euro_orig': row.euro_orig,
+                'reg_price': row.reg_price,
+                'reg_euro': row.reg_euro
             })
         return result

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block heading %}
+{% endblock %}
+
+{% block subhead %}
+    {% if submit %}
+        {% if isMatching %}
+            Showing results for the game <strong>{{ game }}</strong>
+        {% else %}
+            Could not find results for <strong>{{ game }}</strong>. Showing results for <strong>{{ gameTitle }} instead.</strong>?
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+   <form role="search" action="/deal_search" method="POST">
+        <input class="form-control me-2 mb-2" type="search" name="input" placeholder="Type game here" aria-label="Search" />
+
+        <button type="submit" class="btn btn-primary d-block mx-auto col-6">Search</button>
+    </form>
+
+    {% if submit %}
+        {% if isMatching %}
+            <p>{{cheapest}} and {{sorted_prices}} also {{sorted_prices}}</p>
+        {% else %}
+            Could not find results for <strong>{{ game }}</strong>. Showing results for <strong>{{ gameTitle }} instead.</strong>?
+        {% endif %}
+    {% endif %}
+    
+{% endblock %}

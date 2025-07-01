@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block heading %}{% endblock %}
 
-{% block subhead %} Showing results for the game <strong>{{game}}</strong> {% endblock %}
+{% block subhead %}
+    {% if isMatching %}
+        Showing results for the game <strong>{{ game }}</strong>
+    {% else %}
+        Could not find results for <strong>{{ game }}</strong>. Do you mean <strong>{{ gameTitle }}</strong>?
+    {% endif %}
+{% endblock %}
+
 {% block content %}
-    € {{price}}, game ID: {{id}}, diffirent price: {{new_price}}
+   European price: € {{ price }}      |       Chosen region: {{ region }}    |     Region price: {{ new_price }} converted to euros is € {{ reg_euros }}
 {% endblock %}

@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
 {% block heading %}
-<h1><center>Past searches</center></h1>
 {% endblock %}
 
 {% block content %}
+<h1><center>Past searches</center></h1>
+<ul>
+  {% for item in history %}
+    <li>Name: {{ item.name }}, Price: {{ item.reg_price }}</li>
+  {% endfor %}
+</ul>
 {% endblock %}
