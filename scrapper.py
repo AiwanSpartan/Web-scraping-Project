@@ -96,7 +96,13 @@ def regional_to_euros(region, reg_price):
         print("Could not parse price")
         return None
 
-    price_number = float(match.group().replace(",", ""))
+    # convert comma to dot and manually remove euro sign for Brazil and Germany
+    if region in ["BRL", "EUR"]:
+        cleaned_price = reg_price.replace("€", "").replace(",", ".").strip()
+        price_number = float(cleaned_price)
+    else:
+        price_number = float(match.group().replace(",", ""))
+
     rate = data["conversion_rates"]["EUR"]
     
     formatted_euros = rate * price_number

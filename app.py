@@ -28,21 +28,20 @@ def data_process():
     user_input = request.form.get("input") or None
     
     country = request.form.get("country") or None
-    
-    price_text, isMatching, game_title = get_price(user_input, isMatching, game_title)
 
     if not user_input or not country:
         return {
         "user_input": user_input,
         "country": country,
         "isMatching": isMatching,
-        "game_title": game_title,
+        "game_title": None,
         "full_country": None,
         "user_reg_price": None,
         "user_reg_euros": None,
         "price_text": None
         }
 
+    price_text, isMatching, game_title = get_price(user_input, isMatching, game_title)
 
     price_text = float(price_text.replace(",", ".").replace("€", "").strip())
     gameID = get_id(user_input)
@@ -106,8 +105,9 @@ def get_deals():
     if request.method == "POST":
         submit = True
         result = data_process()
-        if not result:
-            return render_template("deals.html", error="Please provide game and region.")
+        if result["user_input"] is None:
+            isEmpty = True
+            return render_template("deals.html", isEmpty = isEmpty)
         
         return compare_all_regions(result["user_input"])
         # return render_template(
@@ -118,7 +118,6 @@ def get_deals():
         #     submit = submit)
     
     return render_template("deals.html")
-
 
 
 def compare_all_regions(user_input):
@@ -134,10 +133,21 @@ def compare_all_regions(user_input):
     for reg in REGIONS:
         try:
             reg_price = get_reg_price(gameID, reg)
+
+            # Clean price string first (remove € and spaces)
+            reg_price = reg_price.replace("€", "").replace(" ", "").replace("'", "").strip()
+            
+            # Only convert comma to dot for Brazil and Germany (EUR)
+            if reg in ["BRL", "EUR"]:
+                reg_price = reg_price.replace(",", ".")
+                
             euro_price = regional_to_euros(reg, reg_price)
             full_name = reg_code_converter(reg)["country"]
+
+            full_name = str(full_name).replace("'", "").strip()
+            reg_price = str(reg_price).replace("'", "").strip()
+
             prices.append((full_name, reg_price, euro_price, reg))
-            print(prices)
         except Exception as e:
             print(f"Error with region {reg}: {e}")
             continue
@@ -148,7 +158,9 @@ def compare_all_regions(user_input):
     submit = True
 
     return render_template("deals.html",
-        game_title = game_title,
+        user_input = user_input,
+        isMatching = isMatching,
+        gameTitle = game_title,
         gameID = gameID,
         orig_price = price_text,
         sorted_prices = sorted_prices,
@@ -156,6 +168,12 @@ def compare_all_regions(user_input):
         submit = submit
     )
 
+
+@app.route("/hist", methods=["GET"])
+def history():
+    response = requests.get("http://localhost:5000/get_data")
+    history = response.json()
+    return render_template("history.html", history=history)
 
 
 api.add_resource(GameDataResource, "/get_data")

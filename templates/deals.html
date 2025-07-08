@@ -4,11 +4,17 @@
 {% endblock %}
 
 {% block subhead %}
+    {% if isEmpty %}
+        <div class="alert alert-warning w-50 mx-auto" role="alert">
+        <center>Make sure to search for the game!</center>
+        </div>
+    {% endif %}
+
     {% if submit %}
         {% if isMatching %}
             Showing results for the game <strong>{{ game }}</strong>
         {% else %}
-            Could not find results for <strong>{{ game }}</strong>. Showing results for <strong>{{ gameTitle }} instead.</strong>?
+            Could not find results for <strong>{{ user_input }}</strong>. Showing results for <strong>{{ gameTitle }}</strong> instead.
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -21,11 +27,13 @@
     </form>
 
     {% if submit %}
-        {% if isMatching %}
-            <p>{{cheapest}} and {{sorted_prices}} also {{sorted_prices}}</p>
-        {% else %}
-            Could not find results for <strong>{{ game }}</strong>. Showing results for <strong>{{ gameTitle }} instead.</strong>?
-        {% endif %}
+        <p>Cheapest: {{ cheapest[0] }} - {{ cheapest[1] }} (€ {{ cheapest[2] }})</p>
+
+        <ul>
+        {% for country, price, euro_price, code in sorted_prices %}
+            <li>{{ country }} — {{ price }} —  € {{ euro_price }}</li>
+        {% endfor %}
+        </ul>    
     {% endif %}
     
 {% endblock %}
