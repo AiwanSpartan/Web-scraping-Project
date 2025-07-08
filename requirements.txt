@@ -3,3 +3,4 @@ requests
 flask-restful
 python-dotenv
 flask_sqlalchemy
+beautifulsoup4
